@@ -194,23 +194,82 @@ void abrirConexao(void) {
 }
 
 void fecharConexao(void) {
-    
+    if (conexaoAberta == 1) {
+        int retorno = FechaConexaoImpressora();
+        if (retorno == 0) {
+            conexaoAberta = 0;
+            printf("Conexao fechada com sucesso.\n");
+        } else {
+            printf("Erro ao fechar conexao. Codigo de erro: %d\n", retorno);
+        }
+    } else {
+        printf("Conexao ja esta fechada.\n");
+    }
 }
 
 void imprimirTexto(void) {
-   
+   if (!conexaoAberta) {
+        printf("Conexao fechada. Abra a conexao antes (opcao 2).\n");
+        return; //Return sai da função, não executando o restante do código.
+   }
+
+   char texto[200];
+   capturarEntrada("Texto a imprimir: ", texto, sizeof(texto));
+   int copias = lerInteiro("Quantas copias? ");
+
+   for (int i=1; i <= copias; i++) { // Loop para imprimir a quantidade de cópias solicitadas
+        int retorno = ImpressaoTexto(texto, 1, 4, 0); // 1 = esquerda, 4 = negrito, 0 = tamanho padrao
+        if (retorno >= 0) { // Se o retorno for >= a zero a impressão foi um sucesso
+            printf("Copia %d impressa!\n", i);
+        } else {
+            printf("Erro ao imprimir. Codigo: %d\n", retorno);
+        }
+   }
+   Corte(5); //Corta o papel
 }
 
 void imprimirQRCode(void) {
-    
+    if (!conexaoAberta) {
+        printf("Conexao fechada. Abra a conexao antes (opcao 2).\n");
+        return;
+   }
+
+   char texto[200];
+   capturarEntrada("Texto a imprimir no QR Code: ", texto, sizeof(texto));
+   int tamanho = lerInteiro("Tamanho do QR Code (1 a 6): ");
+   int retorno = ImpressaoQRCode(texto, tamanho, 2);
+
+   if (retorno == 0) {
+        Corte(5);
+        printf("Impressao do QR Code realizado com sucesso!\n");
+   } else {
+        printf("Erro ao imprimir QR Code. Codigo: %d\n", retorno);
+   }
 }
 
 void imprimirCodigoBarras(void) {
-    
+    if (!conexaoAberta) {
+        printf("Conexao fechada. Abra a conexao antes (opcao 2).\n");
+        return;
+   }
+
+   char texto[200];
+   capturarEntrada("Texto a imprimir no Codigo de Barras: ", texto, sizeof(texto));
+   int tipo = lerInteiro("Tipo de codigo de barras (0 a 8): ");
+   int altura = lerInteiro("Altura do codigo de barras (1 a 255): ");
+   int largura = lerInteiro("Largura do codigo de barras (1 a 6): ");
+   int HRI = lerInteiro("HRI (0 = nao imprimir, 1 = acima, 2 = abaixo, 3 = ambos, 4 = nao impresso): ");
+
+   int retorno = ImpressaoCodigoBarras(tipo, texto, altura, largura, HRI);
+   if (retorno == 0) {
+        Corte(5);
+        printf("Impressao do Codigo de Barras realizado com sucesso!\n");
+    } else {
+        printf("Erro ao imprimir Codigo de Barras. Codigo: %d\n", retorno);
+    }
 }
 
 void imprimirXMLSAT(void) {
-    
         /* le o arquivo XML (na raiz do projeto) para a memoria */
         //char *dadosXML = lerArquivo("XMLSAT.xml");
         
@@ -233,6 +292,10 @@ void abrirGaveta(void) {
 
 void emitirSinalSonoro(void) {
     
+}
+
+int fazerLogin() {
+
 }
 
 void exibirMenu(void) {
@@ -268,7 +331,47 @@ int main(void) {
         exibirMenu();
         opcao = lerInteiro("\nDigite a opcao desejada: ");
 
-        //...
+        switch(opcao) {
+            case 1:
+                configurarConexao();
+                break;
+            case 2:
+                abrirConexao();
+                break;
+            case 3:
+                fecharConexao();
+                break;
+            case 4:
+                imprimirTexto();
+                break;
+            case 5:
+                imprimirQRCode();
+                break;
+            case 6:
+                imprimirCodigoBarras();
+                break;
+            case 7:
+                imprimirXMLSAT();
+                break;
+            case 8:
+                imprimirXMLCancelamentoSAT();
+                break;
+            case 9:
+                abrirGavetaElgin();
+                break;
+            case 10:
+                abrirGaveta();
+                break;
+            case 11:
+                emitirSinalSonoro();
+                break;
+            case 0:
+                printf("Saindo do programa...\n");
+                break;
+            default:
+                printf("Opcao invalida. Tente novamente.\n");
+                break;
+        }
     }
 
     FreeLibrary(dll);
