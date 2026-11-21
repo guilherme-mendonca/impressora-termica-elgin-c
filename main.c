@@ -270,24 +270,75 @@ void imprimirCodigoBarras(void) {
 }
 
 void imprimirXMLSAT(void) {
-        /* le o arquivo XML (na raiz do projeto) para a memoria */
-        //char *dadosXML = lerArquivo("XMLSAT.xml");
-        
+    if (!conexaoAberta) {
+        printf("Conexao fechada. Abra a conexao antes (opcao 2).\n");
+        return;
+    }
+    char *dadosXML = lerArquivo("XMLSAT.xml"); // Lê o arquivo XMLSAT.xml (na raiz do projeto) para a memória
+    if (dadosXML == NULL) { // Se não conseguir ler ou econtrar o arquivo, exibe mensagem de erro e retorna
+        printf("Nao foi possivel ler o XMLSAT.xml\n");
+        return;
+    }
+
+    int retorno = ImprimeXMLSAT(dadosXML, 0); // Imprime o XML SAT usando a função da DLL
+    Corte(5);
+    free(dadosXML); // Libera a memória alocada para o conteúdo do arquivo
+
+    if (retorno == 0) { // Se o retorno for 0, a impressão foi um sucesso
+        printf("XML SAT impresso!\n");
+    } else {
+        printf("Erro ao imprimir XML SAT. Codigo: %d\n", retorno);
+    }
 }
 
 void imprimirXMLCancelamentoSAT(void) {
-    	
-    	/* le o arquivo XML (na raiz do projeto) para a memoria */
-        //char *dadosXML = lerArquivo("CANC_SAT.xml");
-        
+    if (!conexaoAberta) {
+        printf("Conexao fechada. Abra a conexao antes (opcao 2).\n");
+        return;
+    }
+    char *dadosXML = lerArquivo("CANC_SAT.xml"); // Lê o arquivo CANC_SAT.xml (na raiz do projeto) para a memória
+    if (dadosXML == NULL) { // Se não conseguir ler ou econtrar o arquivo, exibe mensagem de erro e retorna
+        printf("Nao foi possivel ler o CANC_SAT.xml\n");
+        return;
+    }
+
+    int retorno = ImprimeXMLCancelamentoSAT(dadosXML, ASS_QRCODE, 0); // Imprime o XML de cancelamento SAT usando a função da DLL
+    Corte(5);
+    free(dadosXML); // Libera a memória alocada para o conteúdo do arquivo
+
+    if (retorno == 0) {
+        printf("XML de Cancelamento SAT impresso!\n");
+    } else {
+        printf("Erro ao imprimir XML de Cancelamento SAT. Codigo: %d\n", retorno);
+    }
 }
 
 void abrirGavetaElgin(void) {
-    
+    if (!conexaoAberta) {
+        printf("Conexao fechada. Abra a conexao antes (opcao 2).\n");
+        return;
+    }
+
+    int retorno = AbreGavetaElgin(1, 100, 100); // Pino 1, tempo de abertura 100ms, tempo de fechamento 100ms
+    if (retorno == 0) {
+        printf("Gaveta Elgin aberta!\n");
+    } else {
+        printf("Erro ao abrir gaveta Elgin. Codigo: %d\n", retorno);
+    }
 }
 
 void abrirGaveta(void) {
-    
+    if (!conexaoAberta) {
+        printf("Conexao fechada. Abra a conexao antes (opcao 2).\n");
+        return;
+    }
+
+    int retorno = AbreGaveta(1, 100, 100); // Pino 1, tempo de abertura 100ms, tempo de fechamento 100ms
+    if (retorno == 0) {
+        printf("Gaveta aberta!\n");
+    } else {
+        printf("Erro ao abrir gaveta. Codigo: %d\n", retorno);
+    }
 }
 
 void emitirSinalSonoro(void) {
