@@ -342,11 +342,35 @@ void abrirGaveta(void) {
 }
 
 void emitirSinalSonoro(void) {
-    
+    if (!conexaoAberta) {
+        printf("Conexao fechada. Abra a conexao antes (opcao 2).\n");
+        return;
+    }
+
+    int retorno = SinalSonoro(3, 100, 100); // 3 bipes, 100ms de duração cada (tempoInicio), 100ms de intervalo (tempoFim)
+    if (retorno == 0) {
+        printf("Sinal sonoro emitido!\n");
+    } else {
+        printf("Erro ao emitir sinal sonoro. Codigo: %d\n", retorno);
+    }
 }
 
 int fazerLogin() {
+    char usuario[50], senha[50];
+    
+    for (int tentativa=1; tentativa <= 3; tentativa++) {
+        capturarEntrada("Digite o usuario: ", usuario, sizeof(usuario));
+        capturarEntrada("Digite a senha: ", senha, sizeof(senha));
 
+        if (strcmp(usuario, "admin") == 0 && strcmp(senha, "1234") == 0) { // Se o usuário e senha estiverem corretos, retorna 1 (login bem-sucedido)
+            printf("Login bem-sucedido!\n");
+            return 1;
+        } else {
+            printf("Usuario ou senha incorretos. Restam %d tentativas.\n", 3 - tentativa);
+        }
+    }
+    printf("Numero maximo de tentativas atingido. Encerrando o programa.\n");
+    return 0;
 }
 
 void exibirMenu(void) {
@@ -372,8 +396,14 @@ void exibirMenu(void) {
 /* ===================== Programa principal ===================== */
 
 int main(void) {
-    if (!carregarDLL()) {
+    if (!carregarDLL()) { // Se não conseguir carregar a DLL, exibe mensagem de erro e encerra o programa
         printf("Programa encerrado.\n");
+        return 1;
+    }
+
+    if (!fazerLogin()) { // Se o login falhar, exibe mensagem de acesso negado e encerra o programa
+        printf("Acesso negado.\n");
+        FreeLibrary(dll);
         return 1;
     }
 
