@@ -118,3 +118,10 @@ impressora.exe
  
 - [Documentação oficial da Elgin](https://elgindevelopercommunity.github.io/group___m1.html)
 ---
+
+## 👥 Autores
+ 
+- Guilherme Mendonça
+- Leonardo Coutinho
+- Miguel Dutra
+ 

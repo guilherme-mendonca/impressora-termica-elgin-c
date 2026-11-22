@@ -236,15 +236,14 @@ void imprimirQRCode(void) {
 
    char texto[200];
    capturarEntrada("Texto a imprimir no QR Code: ", texto, sizeof(texto));
-   int tamanho = lerInteiro("Tamanho do QR Code (1 a 6): ");
-   int retorno = ImpressaoQRCode(texto, tamanho, 2);
+   int retorno = ImpressaoQRCode(texto, 6, 4); // Imprime o texto digitado pelo usuário como QR Code (conteúdo, tamanho, nível de correção)
 
    if (retorno == 0) {
-        Corte(5);
         printf("Impressao do QR Code realizado com sucesso!\n");
    } else {
         printf("Erro ao imprimir QR Code. Codigo: %d\n", retorno);
    }
+   Corte(5);
 }
 
 void imprimirCodigoBarras(void) {
@@ -253,20 +252,13 @@ void imprimirCodigoBarras(void) {
         return;
    }
 
-   char texto[200];
-   capturarEntrada("Texto a imprimir no Codigo de Barras: ", texto, sizeof(texto));
-   int tipo = lerInteiro("Tipo de codigo de barras (0 a 8): ");
-   int altura = lerInteiro("Altura do codigo de barras (1 a 255): ");
-   int largura = lerInteiro("Largura do codigo de barras (1 a 6): ");
-   int HRI = lerInteiro("HRI (0 = nao imprimir, 1 = acima, 2 = abaixo, 3 = ambos, 4 = nao impresso): ");
-
-   int retorno = ImpressaoCodigoBarras(tipo, texto, altura, largura, HRI);
+   int retorno = ImpressaoCodigoBarras(8, "{A012345678912", 100, 2, 3); // Imprime um código de barras de exemplo (tipo, conteúdo, altura, largura, HRI)
    if (retorno == 0) {
-        Corte(5);
         printf("Impressao do Codigo de Barras realizado com sucesso!\n");
     } else {
         printf("Erro ao imprimir Codigo de Barras. Codigo: %d\n", retorno);
     }
+    Corte(5);
 }
 
 void imprimirXMLSAT(void) {
@@ -319,7 +311,7 @@ void abrirGavetaElgin(void) {
         return;
     }
 
-    int retorno = AbreGavetaElgin(1, 100, 100); // Pino 1, tempo de abertura 100ms, tempo de fechamento 100ms
+    int retorno = AbreGavetaElgin(1, 50, 50); // Pino 1, tempo inicial = 50, tempo final = 50
     if (retorno == 0) {
         printf("Gaveta Elgin aberta!\n");
     } else {
@@ -333,7 +325,7 @@ void abrirGaveta(void) {
         return;
     }
 
-    int retorno = AbreGaveta(1, 100, 100); // Pino 1, tempo de abertura 100ms, tempo de fechamento 100ms
+    int retorno = AbreGaveta(1, 5, 10); // Pino 1, tempo inicial = 5, tempo final = 10
     if (retorno == 0) {
         printf("Gaveta aberta!\n");
     } else {
@@ -347,7 +339,7 @@ void emitirSinalSonoro(void) {
         return;
     }
 
-    int retorno = SinalSonoro(3, 100, 100); // 3 bipes, 100ms de duração cada (tempoInicio), 100ms de intervalo (tempoFim)
+    int retorno = SinalSonoro(3 , 50, 5); // 3 bipes, tempoInicio = 50, tempoFim = 5
     if (retorno == 0) {
         printf("Sinal sonoro emitido!\n");
     } else {
@@ -355,7 +347,7 @@ void emitirSinalSonoro(void) {
     }
 }
 
-int fazerLogin() {
+int fazerLogin(void) {
     char usuario[50], senha[50];
     
     for (int tentativa=1; tentativa <= 3; tentativa++) {
@@ -448,6 +440,9 @@ int main(void) {
                 break;
             case 0:
                 printf("Saindo do programa...\n");
+                if (conexaoAberta) {
+                    fecharConexao();
+                }
                 break;
             default:
                 printf("Opcao invalida. Tente novamente.\n");
