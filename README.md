@@ -123,5 +123,5 @@ impressora.exe
  
 - Guilherme Mendonça
 - Leonardo Coutinho
-- Miguel Dutra
- 
+- Miguel Dutra Sousa
+ --
